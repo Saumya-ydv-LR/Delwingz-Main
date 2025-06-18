@@ -1,6 +1,5 @@
-// src/pages/Login.tsx
 import React from 'react';
-import { useNavigate } from 'react-router-dom'; // ✅ Needed for navigation
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -12,11 +11,11 @@ export default function Login() {
   };
 
   const handleCreateAccount = () => {
-    navigate("/signup-user"); // ✅ Redirect to user signup
+    navigate("/signup-user");
   };
 
   const handleAdminSignup = () => {
-    navigate("/signup-admin"); // ✅ Redirect to admin signup
+    navigate("/signup-admin");
   };
 
   return (
@@ -67,11 +66,14 @@ export default function Login() {
         </p>
       </div>
 
-      {/* Right Section */}
-      <div
-        className="w-1/2 bg-cover bg-center"
-        style={{ backgroundImage: "url('/food.jpg')" }}
-      />
+      {/* Right Section with Shrunk Image */}
+      <div className="w-1/2 flex items-center justify-center bg-white">
+        <img
+          src="/delwingz-login-banner.png"
+          alt="Delwingz Banner"
+          className="max-w-[100%] max-h-[100%] object-contain"
+        />
+      </div>
     </div>
   );
 }
