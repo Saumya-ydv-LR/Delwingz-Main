@@ -12,7 +12,7 @@ const Navbar = () => {
         </div>
 
         <div className="hidden md:flex items-center space-x-8">
-          <a href="#" className="text-delwingz-black hover:text-delwingz-red transition-colors font-medium">
+          <a href="/" className="text-delwingz-black hover:text-delwingz-red transition-colors font-medium">
             Home
           </a>
           <a href="#menu" className="text-delwingz-black hover:text-delwingz-red transition-colors font-medium">
