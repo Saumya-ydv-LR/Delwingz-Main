@@ -1,0 +1,119 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. */
+
+@layer base {
+  :root {
+    --background: 40 100% 99%;
+    --foreground: 0 0% 0%;
+
+    --card: 40 100% 99%;
+    --card-foreground: 0 0% 0%;
+
+    --popover: 40 100% 99%;
+    --popover-foreground: 0 0% 0%;
+
+    --primary: 0 74% 49%;
+    --primary-foreground: 40 100% 99%;
+
+    --secondary: 0 0% 95%;
+    --secondary-foreground: 0 0% 0%;
+
+    --muted: 0 0% 95%;
+    --muted-foreground: 0 0% 45%;
+
+    --accent: 0 74% 49%;
+    --accent-foreground: 40 100% 99%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 40 100% 99%;
+
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 0 74% 49%;
+
+    --radius: 1rem;
+
+    /* Custom Delwingz colors */
+    --delwingz-red: 0 74% 49%;
+    --delwingz-black: 0 0% 0%;
+    --delwingz-off-white: 40 100% 99%;
+  }
+
+  .dark {
+    --background: 0 0% 0%;
+    --foreground: 40 100% 99%;
+
+    --card: 0 0% 0%;
+    --card-foreground: 40 100% 99%;
+
+    --popover: 0 0% 0%;
+    --popover-foreground: 40 100% 99%;
+
+    --primary: 0 74% 49%;
+    --primary-foreground: 40 100% 99%;
+
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 40 100% 99%;
+
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
+
+    --accent: 0 74% 49%;
+    --accent-foreground: 40 100% 99%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 40 100% 99%;
+
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 0 74% 49%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+
+  .font-display {
+    font-family: 'Bebas Neue', cursive;
+  }
+
+  .font-sans {
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+@layer utilities {
+  .delwingz-red {
+    color: hsl(var(--delwingz-red));
+  }
+  
+  .bg-delwingz-red {
+    background-color: hsl(var(--delwingz-red));
+  }
+  
+  .delwingz-black {
+    color: hsl(var(--delwingz-black));
+  }
+  
+  .bg-delwingz-black {
+    background-color: hsl(var(--delwingz-black));
+  }
+  
+  .delwingz-off-white {
+    color: hsl(var(--delwingz-off-white));
+  }
+  
+  .bg-delwingz-off-white {
+    background-color: hsl(var(--delwingz-off-white));
+  }
+}
