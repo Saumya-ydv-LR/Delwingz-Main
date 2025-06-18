@@ -36,7 +36,7 @@ const Navbar = () => {
         <div className="flex items-center space-x-4">
           <div className="hidden lg:flex items-center text-delwingz-black text-sm font-medium">
             <Phone className="w-4 h-4 mr-2" />
-            6969
+            997995795
           </div>
 
           {/* ✅ LOGIN BUTTON LINKS TO /login */}
