@@ -1,13 +1,51 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export default function Login() {
   const navigate = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const [identifier, setIdentifier] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const isEmail = (value: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Add login logic here
-    console.log("Logging in...");
+    setLoading(true);
+
+    const payload: {
+      email?: string;
+      mobile?: string;
+      password: string;
+    } = {
+      password,
+    };
+
+    if (isEmail(identifier)) {
+      payload.email = identifier;
+    } else {
+      payload.mobile = identifier;
+    }
+
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/users/Login`,
+        payload
+      );
+
+      // Handle login success
+      alert('Login successful!');
+      // Example: navigate('/dashboard');
+    } catch (error) {
+      console.error(error);
+      alert('Login failed. Please check your credentials.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCreateAccount = () => {
@@ -32,20 +70,27 @@ export default function Login() {
         {/* Login Form */}
         <form onSubmit={handleLogin} className="w-full max-w-sm space-y-4">
           <input
-            type="email"
-            placeholder="Email"
+            type="text"
+            placeholder="Email or Mobile Number"
+            value={identifier}
+            onChange={(e) => setIdentifier(e.target.value)}
             className="w-full p-3 rounded border border-input focus:outline-none focus:ring-2 focus:ring-primary"
+            required
           />
           <input
             type="password"
             placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="w-full p-3 rounded border border-input focus:outline-none focus:ring-2 focus:ring-primary"
+            required
           />
           <button
             type="submit"
-            className="w-full py-3 rounded text-white bg-delwingz-red hover:bg-primary/90 transition"
+            disabled={loading}
+            className="w-full py-3 rounded text-white bg-delwingz-red hover:bg-primary/90 transition disabled:opacity-50"
           >
-            Login
+            {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
 
@@ -66,7 +111,7 @@ export default function Login() {
         </p>
       </div>
 
-      {/* Right Section with Shrunk Image */}
+      {/* Right Section with Image */}
       <div className="w-1/2 flex items-center justify-center bg-white">
         <img
           src="/delwingz-login-banner.png"
