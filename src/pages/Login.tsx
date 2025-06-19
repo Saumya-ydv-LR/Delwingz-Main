@@ -9,36 +9,36 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const isEmail = (value: string) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-  };
+  const isEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    const payload: {
-      email?: string;
-      mobile?: string;
-      password: string;
-    } = {
-      password,
-    };
+    const payload: { email?: string; mobile?: string; password: string } = { password };
 
-    if (isEmail(identifier)) {
-      payload.email = identifier;
-    } else {
-      payload.mobile = identifier;
-    }
+    if (isEmail(identifier)) payload.email = identifier;
+    else payload.mobile = identifier;
 
     try {
-      const response = await axios.post(
+      await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/users/Login`,
-        payload
+        payload,
+        {
+          withCredentials: true, // ✅ Important to receive cookies
+        }
       );
 
+      // ✅ Read access token from cookie and log it
+      const cookieToken = document.cookie.match(/accessToken=([^;]+)/);
+      if (cookieToken) {
+        console.log("Access Token (DEV):", cookieToken[1]);
+      } else {
+        console.warn("No access token found in cookies.");
+      }
+
       alert('Login successful!');
-      // Example: navigate('/dashboard');
+      // ❌ No redirect here
     } catch (error) {
       console.error(error);
       alert('Login failed. Please check your credentials.');
@@ -47,27 +47,13 @@ export default function Login() {
     }
   };
 
-  const handleCreateAccount = () => {
-    navigate("/signup-user");
-  };
-
-  const handleAdminSignup = () => {
-    navigate("/signup-admin");
-  };
-
+  const handleCreateAccount = () => navigate('/signup-user');
+  const handleAdminSignup = () => navigate('/signup-admin');
   const handleForgotPassword = async () => {
-    if (!identifier) {
-      alert('Please enter your email or mobile number first.');
-      return;
-    }
+    if (!identifier) return alert('Please enter your email or mobile number first.');
 
     const payload: { email?: string; mobile?: string } = {};
-
-    if (isEmail(identifier)) {
-      payload.email = identifier;
-    } else {
-      payload.mobile = identifier;
-    }
+    isEmail(identifier) ? (payload.email = identifier) : (payload.mobile = identifier);
 
     try {
       await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/users/forget-password`, payload);
@@ -79,32 +65,32 @@ export default function Login() {
   };
 
   return (
-    <div className="relative flex h-screen w-screen bg-[#a6001a] overflow-hidden">
-      {/* Background Image or Branding on Left */}
-      <div className="absolute left-0 top-0 w-1/2 h-full flex items-center justify-center z-0">
-        <img src="/login-delwing.png" alt="Logo" className="w-60 h-60" />
+    <div className="flex flex-col lg:flex-row h-screen w-screen bg-[#a6001a] overflow-hidden">
+      {/* Left Side (Branding Image) */}
+      <div className="flex items-center justify-center w-full lg:w-1/2 h-1/3 lg:h-full bg-[#a6001a]">
+        <img src="/login-delwing.png" alt="Logo" className="w-40 h-40 lg:w-60 lg:h-60" />
       </div>
 
-      {/* Login Form aligned to right and centered vertically */}
-      <div className="flex items-center justify-end h-screen w-full pr-24">
-        <div className="bg-white p-10 rounded-xl shadow-2xl w-[400px]">
-          <h2 className="text-5xl font-extrabold text-center text-[#e63946] font-serif">
+      {/* Right Side (Login Form) */}
+      <div className="flex items-center justify-center w-full lg:w-1/2 px-6 py-10 lg:py-0">
+        <div className="bg-white p-6 sm:p-8 rounded-xl shadow-2xl w-full max-w-md">
+          <h2 className="text-4xl lg:text-5xl font-extrabold text-center text-[#e63946] font-serif">
             User Login
           </h2>
-          <h3 className="text-xl text-center font-bold mt-2">Welcome Back</h3>
+          <h3 className="text-lg lg:text-xl text-center font-bold mt-2">Welcome Back</h3>
           <p className="text-sm text-center text-gray-500 mb-6">
             Login to access the user dashboard
           </p>
 
           <form onSubmit={handleLogin} className="space-y-5">
-            {/* Email Input */}
+            {/* Identifier Input */}
             <div>
               <label className="text-sm block mb-1">Email or Mobile</label>
               <div className="flex items-center border rounded px-3 py-2">
-                <span className="mr-2">📧</span>
+                <span className="mr-2">👤</span>
                 <input
                   type="text"
-                  placeholder="admin@example.com"
+                  placeholder="Enter Email or Mobile No."
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
                   className="w-full outline-none"
@@ -139,26 +125,19 @@ export default function Login() {
             </button>
 
             {/* Footer Links */}
-            <div className="flex justify-center gap-4 text-sm text-[#a6001a]">
-              <button
-                type="button"
-                onClick={handleCreateAccount}
-                className="hover:underline"
-              >
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-4 text-sm text-[#a6001a] mt-2">
+              <button type="button" onClick={handleCreateAccount} className="hover:underline">
                 Create Account
               </button>
-              <button
-                type="button"
-                onClick={handleForgotPassword}
-                className="hover:underline"
-              >
+              <span className="hidden sm:block">|</span>
+              <button type="button" onClick={handleForgotPassword} className="hover:underline">
                 Forgot Password?
               </button>
             </div>
 
             <p
               onClick={handleAdminSignup}
-              className="text-center text-sm mt-2 cursor-pointer text-[#a6001a] hover:underline"
+              className="text-center text-sm mt-4 cursor-pointer text-[#a6001a] hover:underline"
             >
               Admin Signup
             </p>

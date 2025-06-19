@@ -15,7 +15,6 @@ const Navbar = () => {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-delwingz-off-white/95 backdrop-blur-sm border-b border-border shadow-lg">
-      {/* 🔽 Reduced h-20 to h-16 */}
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
 
         {/* ✅ Logo Image (clickable) */}
@@ -28,21 +27,11 @@ const Navbar = () => {
 
         {/* Navigation Links */}
         <div className="hidden md:flex items-center space-x-8">
-          <a href="/" className="text-delwingz-black hover:text-delwingz-red transition-colors font-medium">
-            Home
-          </a>
-          <a href="#menu" className="text-delwingz-black hover:text-delwingz-red transition-colors font-medium">
-            Menu
-          </a>
-          <a href="#features" className="text-delwingz-black hover:text-delwingz-red transition-colors font-medium">
-            Why Us
-          </a>
-          <a href="#bestsellers" className="text-delwingz-black hover:text-delwingz-red transition-colors font-medium">
-            Bestsellers
-          </a>
-          <a href="#contact" className="text-delwingz-black hover:text-delwingz-red transition-colors font-medium">
-            Contact
-          </a>
+          <a href="/" className="text-delwingz-black hover:text-delwingz-red transition-colors font-medium">Home</a>
+          <a href="#menu" className="text-delwingz-black hover:text-delwingz-red transition-colors font-medium">Menu</a>
+          <a href="#features" className="text-delwingz-black hover:text-delwingz-red transition-colors font-medium">Why Us</a>
+          <a href="#bestsellers" className="text-delwingz-black hover:text-delwingz-red transition-colors font-medium">Bestsellers</a>
+          <a href="#contact" className="text-delwingz-black hover:text-delwingz-red transition-colors font-medium">Contact</a>
           <div className="flex items-center text-delwingz-black text-sm">
             <MapPin className="w-4 h-4 mr-1" />
             Rajasthan
@@ -56,10 +45,10 @@ const Navbar = () => {
             997995795
           </div>
 
-          {/* ✅ Show login only if not logged in */}
+          {/* ✅ Show login in all views now */}
           {!isLoggedIn && (
             <Link to="/login">
-              <Button className="hidden md:inline-flex bg-delwingz-red hover:bg-delwingz-red/90 text-delwingz-off-white px-6 py-3 text-lg rounded-lg">
+              <Button className="inline-flex px-4 py-2 text-sm md:px-6 md:py-3 md:text-lg bg-delwingz-red hover:bg-delwingz-red/90 text-delwingz-off-white rounded-lg">
                 Login
               </Button>
             </Link>
