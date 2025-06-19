@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+// Pages
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import VerifyEmailPage from "./pages/VerifyEmailPage";
@@ -14,7 +15,8 @@ import AdminSignup from "./pages/AdminSignup";
 import AdminDashboard from "./pages/AdminDashboard";
 import UserDashboard from "./pages/UserDashboard";
 
-import Navbar from "./components/Navbar"; // ✅ Include the navbar
+// Components
+import Navbar from "./components/Navbar";
 
 const queryClient = new QueryClient();
 
@@ -24,8 +26,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-
-        {/* ✅ Navbar appears on all pages */}
+        {/* ✅ Navbar on all pages */}
         <Navbar />
 
         {/* ✅ Page content below the fixed navbar */}
@@ -41,7 +42,6 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
-
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

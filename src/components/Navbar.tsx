@@ -1,6 +1,6 @@
 // src/components/Navbar.tsx
 import { Button } from "@/components/ui/button";
-import { Menu, Phone, MapPin, User } from "lucide-react";
+import { Menu, Phone, MapPin } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -9,7 +9,7 @@ const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
+    const token = document.cookie.match(/accessToken=([^;]+)/);
     setIsLoggedIn(!!token);
   }, []);
 
@@ -45,8 +45,14 @@ const Navbar = () => {
             997995795
           </div>
 
-          {/* ✅ Show login in all views now */}
-          {!isLoggedIn && (
+          {/* ✅ Auth Button: Login or Dashboard */}
+          {isLoggedIn ? (
+            <Link to="/user-dashboard">
+              <Button className="inline-flex px-4 py-2 text-sm md:px-6 md:py-3 md:text-lg bg-delwingz-red hover:bg-delwingz-red/90 text-delwingz-off-white rounded-lg">
+                Dashboard
+              </Button>
+            </Link>
+          ) : (
             <Link to="/login">
               <Button className="inline-flex px-4 py-2 text-sm md:px-6 md:py-3 md:text-lg bg-delwingz-red hover:bg-delwingz-red/90 text-delwingz-off-white rounded-lg">
                 Login
@@ -54,22 +60,10 @@ const Navbar = () => {
             </Link>
           )}
 
-          {/* ☰ Mobile Menu */}
+          {/* ☰ Mobile Menu Icon */}
           <Button variant="ghost" size="icon" className="md:hidden">
             <Menu className="h-6 w-6" />
           </Button>
-
-          {/* ✅ Show User Icon if logged in */}
-          {isLoggedIn && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="hidden md:inline-flex"
-              onClick={() => navigate("/dashboard")}
-            >
-              <User className="h-6 w-6" />
-            </Button>
-          )}
         </div>
       </div>
     </nav>

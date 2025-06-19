@@ -3,13 +3,36 @@ import { useNavigate } from 'react-router-dom';
 
 interface Address {
   id: number;
-  text: string;
+  address_name: string;
+  address_line: string;
+  city: string;
+  state: string;
+  pincode: string;
+  country: string;
   isActive: boolean;
+}
+
+interface UserDetails {
+  id: number;
+  name: string;
+  email: string;
+  mobile: string;
+  role: string;
+  status: string;
+  last_login_date: string;
 }
 
 const UserDashboard: React.FC = () => {
   const [addresses, setAddresses] = useState<Address[]>([]);
-  const [newAddress, setNewAddress] = useState('');
+  const [newAddress, setNewAddress] = useState<Omit<Address, 'id' | 'isActive'>>({
+    address_name: '',
+    address_line: '',
+    city: '',
+    state: '',
+    pincode: '',
+    country: '',
+  });
+  const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,25 +42,52 @@ const UserDashboard: React.FC = () => {
 
     if (token) {
       console.log("Access Token (DEV):", token);
-      fetch("/api/user/data", {
+      fetch("/api/users/me", {
         method: "GET",
         credentials: "include",
       })
         .then(res => res.json())
-        .then(data => console.log("User data:", data))
-        .catch(err => console.error("Error fetching user data:", err));
+        .then(data => setUserDetails(data.data))
+        .catch(err => console.error("Error fetching user details:", err));
     } else {
       console.warn("No access token found in cookies.");
     }
-  }, []);
+  }, [navigate]);
 
-  const handleAdd = () => {
-    if (!newAddress.trim()) return;
-    setAddresses(prev => [
-      ...prev,
-      { id: Date.now(), text: newAddress, isActive: prev.length === 0 },
-    ]);
-    setNewAddress('');
+  const handleAdd = async () => {
+    const isEmpty = Object.values(newAddress).some(value => !value.trim());
+    if (isEmpty) return;
+
+    try {
+      await fetch("/api/user/addresses", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(newAddress),
+      });
+
+      setAddresses(prev => [
+        ...prev,
+        {
+          ...newAddress,
+          id: Date.now(),
+          isActive: prev.length === 0,
+        },
+      ]);
+
+      setNewAddress({
+        address_name: '',
+        address_line: '',
+        city: '',
+        state: '',
+        pincode: '',
+        country: '',
+      });
+    } catch (err) {
+      console.error("Failed to add address:", err);
+    }
   };
 
   const handleDelete = (id: number) => {
@@ -58,14 +108,19 @@ const UserDashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-[#f9f3f2]">
-      {/* Sidebar (without ☕ Dash) */}
+    <div className="min-h-screen flex flex-col md:flex-row bg-white text-black">
+      {/* Sidebar */}
       <aside className="w-full md:w-64 bg-[#e63946] text-white flex flex-col p-6 space-y-6 shadow-md">
         <nav className="flex flex-col gap-3 text-base font-semibold">
-          <a href="#" className="hover:bg-[#d62828] p-3 rounded transition">🏠 Home</a>
-          <a href="#" className="hover:bg-[#d62828] p-3 rounded transition">📦 Orders</a>
-          <a href="#" className="hover:bg-[#d62828] p-3 rounded transition">📍 Addresses</a>
-          <a href="#" className="hover:bg-[#d62828] p-3 rounded transition">⚙️ Settings</a>
+          {['🏠 Home', '📦 Orders', '📍 Addresses', '⚙️ Settings'].map((label) => (
+            <a
+              key={label}
+              href="#"
+              className="p-3 rounded transition hover:bg-white hover:text-[#e63946]"
+            >
+              {label}
+            </a>
+          ))}
         </nav>
         <button
           onClick={handleLogout}
@@ -77,35 +132,56 @@ const UserDashboard: React.FC = () => {
 
       {/* Main content */}
       <main className="flex-1 p-6 md:p-10">
-        <h1 className="text-3xl font-bold text-[#a03333] mb-8">User Dashboard</h1>
+        <h1 className="text-3xl font-bold mb-8">User Dashboard</h1>
 
-        <section className="bg-white p-6 rounded-xl shadow-md">
-          <h2 className="text-2xl font-semibold text-[#b94d4d] mb-6">📍 Manage Addresses</h2>
+        {userDetails && (
+          <section className="mb-8">
+            <h2 className="text-xl font-semibold mb-2 text-[#e63946]">👤 User Info</h2>
+            <div className="p-4 bg-gray-100 border rounded-md space-y-1">
+              <p><strong>Name:</strong> {userDetails.name}</p>
+              <p><strong>Email:</strong> {userDetails.email}</p>
+              <p><strong>Mobile:</strong> {userDetails.mobile || 'N/A'}</p>
+              <p><strong>Status:</strong> {userDetails.status}</p>
+              <p><strong>Role:</strong> {userDetails.role}</p>
+              <p><strong>Last Login:</strong> {new Date(userDetails.last_login_date).toLocaleString()}</p>
+            </div>
+          </section>
+        )}
 
-          <div className="flex flex-col sm:flex-row gap-3 mb-6">
-            <input
-              value={newAddress}
-              onChange={e => setNewAddress(e.target.value)}
-              placeholder="Enter a new address"
-              className="flex-1 border border-red-300 p-3 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-red-200"
-            />
-            <button
-              onClick={handleAdd}
-              className="bg-[#e63946] text-white px-5 py-2 rounded-md font-semibold hover:bg-[#d62828] transition"
-            >
-              ➕ Add
-            </button>
+        <section className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+          <h2 className="text-2xl font-semibold text-[#e63946] mb-6">📍 Manage Addresses</h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+            {Object.entries(newAddress).map(([field, value]) => (
+              <input
+                key={field}
+                value={value}
+                onChange={e => setNewAddress(prev => ({ ...prev, [field]: e.target.value }))}
+                placeholder={field.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                className="border border-gray-400 p-3 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-red-200"
+              />
+            ))}
           </div>
 
-          <ul className="space-y-3">
+          <button
+            onClick={handleAdd}
+            className="bg-[#e63946] text-white px-5 py-2 rounded-md font-semibold hover:bg-[#d62828] transition"
+          >
+            ➕ Add Address
+          </button>
+
+          <ul className="space-y-3 mt-6">
             {addresses.map(address => (
               <li
                 key={address.id}
                 className={`flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 rounded-lg border text-sm shadow-sm ${
-                  address.isActive ? 'bg-[#ffe2e2] border-[#e47070]' : 'bg-white border-gray-300'
+                  address.isActive ? 'bg-gray-100 border-[#e63946]' : 'bg-white border-gray-300'
                 }`}
               >
-                <span className="mb-2 sm:mb-0 text-base">{address.text}</span>
+                <div className="mb-2 sm:mb-0 text-base">
+                  <div><strong>{address.address_name}</strong></div>
+                  <div>{address.address_line}, {address.city}, {address.state} - {address.pincode}, {address.country}</div>
+                </div>
                 <div className="flex gap-2 flex-wrap">
                   {!address.isActive && (
                     <button

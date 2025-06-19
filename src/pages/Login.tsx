@@ -16,20 +16,16 @@ export default function Login() {
     setLoading(true);
 
     const payload: { email?: string; mobile?: string; password: string } = { password };
-
-    if (isEmail(identifier)) payload.email = identifier;
-    else payload.mobile = identifier;
+    isEmail(identifier) ? (payload.email = identifier) : (payload.mobile = identifier);
 
     try {
-      await axios.post(
+      const res = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/users/Login`,
         payload,
-        {
-          withCredentials: true, // ✅ Important to receive cookies
-        }
+        { withCredentials: true }
       );
 
-      // ✅ Read access token from cookie and log it
+      // ✅ Log access token from cookie
       const cookieToken = document.cookie.match(/accessToken=([^;]+)/);
       if (cookieToken) {
         console.log("Access Token (DEV):", cookieToken[1]);
@@ -37,8 +33,17 @@ export default function Login() {
         console.warn("No access token found in cookies.");
       }
 
+      // ✅ Role-based redirection
+      const userRole = res.data?.user?.role;
+      console.log("User Role:", userRole);
+
       alert('Login successful!');
-      // ❌ No redirect here
+      if (userRole === 'admin') {
+        navigate('/admin-dashboard');
+      } else {
+        navigate('/');
+      }
+
     } catch (error) {
       console.error(error);
       alert('Login failed. Please check your credentials.');
@@ -49,6 +54,7 @@ export default function Login() {
 
   const handleCreateAccount = () => navigate('/signup-user');
   const handleAdminSignup = () => navigate('/signup-admin');
+
   const handleForgotPassword = async () => {
     if (!identifier) return alert('Please enter your email or mobile number first.');
 
