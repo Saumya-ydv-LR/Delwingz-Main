@@ -27,8 +27,15 @@ const AdminSignup: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gradient-to-br from-red-50 to-white">
-      <div className="bg-white px-10 py-8 rounded-lg shadow-xl w-full max-w-md border border-red-200">
+    <div className="relative flex justify-center items-center min-h-screen overflow-hidden">
+      {/* Background Image with Blur */}
+      <div
+        className="absolute inset-0 bg-cover bg-center blur-sm scale-105"
+        style={{ backgroundImage: "url('/user-signup-bg.jpg')" }}
+      ></div>
+
+      {/* Signup Form Card */}
+      <div className="relative z-10 bg-white bg-opacity-90 px-10 py-8 rounded-lg shadow-xl w-full max-w-md border border-red-200">
         <h2 className="text-3xl font-bold text-red-600 mb-6 text-center">Admin Sign Up</h2>
 
         <div className="mb-4">
