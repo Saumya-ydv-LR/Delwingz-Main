@@ -41,7 +41,6 @@ const UserDashboard: React.FC = () => {
     const token = tokenMatch ? tokenMatch[1] : null;
 
     if (token) {
-      console.log("Access Token (DEV):", token);
       fetch("/api/users/me", {
         method: "GET",
         credentials: "include",
@@ -108,15 +107,15 @@ const UserDashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-white text-black">
-      {/* Sidebar */}
-      <aside className="w-full md:w-64 bg-[#e63946] text-white flex flex-col p-6 space-y-6 shadow-md">
-        <nav className="flex flex-col gap-3 text-base font-semibold">
-          {['🏠 Home', '📦 Orders', '📍 Addresses', '⚙️ Settings'].map((label) => (
+    <div className="min-h-screen flex flex-col md:flex-row bg-[#fff0f0] text-black font-['Poppins']">
+      <aside className="w-full md:w-64 bg-gradient-to-b from-[#ff4d4d] to-[#e60039] text-white flex flex-col p-6 space-y-6 shadow-2xl rounded-r-3xl">
+        <div className="text-4xl font-extrabold tracking-wide text-center drop-shadow-lg animate-bounce">🐔</div>
+        <nav className="flex flex-col gap-3 text-lg font-semibold">
+          {["📦 Orders", "📍 Addresses", "⚙️ Settings"].map((label) => (
             <a
               key={label}
               href="#"
-              className="p-3 rounded transition hover:bg-white hover:text-[#e63946]"
+              className="p-3 rounded-xl bg-white text-black hover:bg-white hover:text-[#e60039] transition shadow-sm backdrop-blur-sm"
             >
               {label}
             </a>
@@ -124,84 +123,85 @@ const UserDashboard: React.FC = () => {
         </nav>
         <button
           onClick={handleLogout}
-          className="mt-6 bg-white text-[#e63946] font-semibold px-4 py-2 rounded hover:bg-red-100 transition"
+          className="mt-auto bg-white text-[#e63946] font-bold px-4 py-2 rounded-xl hover:bg-red-100 transition shadow"
         >
           🔐 Logout
         </button>
       </aside>
 
-      {/* Main content */}
-      <main className="flex-1 p-6 md:p-10">
-        <h1 className="text-3xl font-bold mb-8">User Dashboard</h1>
+      <main className="relative flex-1 p-6 md:p-10 bg-[#ffd4d4] rounded-l-3xl shadow-inner overflow-hidden">
+        <div className="relative z-10 text-black">
+          <h1 className="text-5xl font-extrabold mb-10 font-['Poppins'] tracking-wide">👋 Welcome to Your Tasty Dashboard</h1>
 
-        {userDetails && (
-          <section className="mb-8">
-            <h2 className="text-xl font-semibold mb-2 text-[#e63946]">👤 User Info</h2>
-            <div className="p-4 bg-gray-100 border rounded-md space-y-1">
-              <p><strong>Name:</strong> {userDetails.name}</p>
-              <p><strong>Email:</strong> {userDetails.email}</p>
-              <p><strong>Mobile:</strong> {userDetails.mobile || 'N/A'}</p>
-              <p><strong>Status:</strong> {userDetails.status}</p>
-              <p><strong>Role:</strong> {userDetails.role}</p>
-              <p><strong>Last Login:</strong> {new Date(userDetails.last_login_date).toLocaleString()}</p>
+          {userDetails && (
+            <section className="mb-10">
+              <h2 className="text-3xl font-bold mb-4 text-[#ff4d4d]">👤 Profile Snapshot</h2>
+              <div className="p-6 bg-[#f8cfcf] border border-[#f99] rounded-3xl shadow-md space-y-2">
+                <p><strong>Name:</strong> {userDetails.name}</p>
+                <p><strong>Email:</strong> {userDetails.email}</p>
+                <p><strong>Mobile:</strong> {userDetails.mobile || 'N/A'}</p>
+                <p><strong>Status:</strong> {userDetails.status}</p>
+                <p><strong>Role:</strong> {userDetails.role}</p>
+                <p><strong>Last Login:</strong> {new Date(userDetails.last_login_date).toLocaleString()}</p>
+              </div>
+            </section>
+          )}
+
+          <section className="bg-[#f8cfcf] p-8 rounded-3xl shadow-xl border border-[#f99]">
+            <h2 className="text-3xl font-semibold text-[#e63946] mb-6">📍 Add Your Delivery Spot</h2>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+              {Object.entries(newAddress).map(([field, value]) => (
+                <input
+                  key={field}
+                  value={value}
+                  onChange={e => setNewAddress(prev => ({ ...prev, [field]: e.target.value }))}
+                  placeholder={field.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                  className="border border-gray-400 p-3 rounded-xl shadow-inner focus:outline-none focus:ring-2 focus:ring-[#ff4d4d] bg-white text-black placeholder:italic"
+                />
+              ))}
             </div>
-          </section>
-        )}
 
-        <section className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-          <h2 className="text-2xl font-semibold text-[#e63946] mb-6">📍 Manage Addresses</h2>
+            <button
+              onClick={handleAdd}
+              className="bg-[#e60039] text-white px-6 py-3 rounded-full font-bold hover:bg-[#c9002b] transition shadow-lg"
+            >
+              ➕ Add Address
+            </button>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-            {Object.entries(newAddress).map(([field, value]) => (
-              <input
-                key={field}
-                value={value}
-                onChange={e => setNewAddress(prev => ({ ...prev, [field]: e.target.value }))}
-                placeholder={field.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                className="border border-gray-400 p-3 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-red-200"
-              />
-            ))}
-          </div>
-
-          <button
-            onClick={handleAdd}
-            className="bg-[#e63946] text-white px-5 py-2 rounded-md font-semibold hover:bg-[#d62828] transition"
-          >
-            ➕ Add Address
-          </button>
-
-          <ul className="space-y-3 mt-6">
-            {addresses.map(address => (
-              <li
-                key={address.id}
-                className={`flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 rounded-lg border text-sm shadow-sm ${
-                  address.isActive ? 'bg-gray-100 border-[#e63946]' : 'bg-white border-gray-300'
-                }`}
-              >
-                <div className="mb-2 sm:mb-0 text-base">
-                  <div><strong>{address.address_name}</strong></div>
-                  <div>{address.address_line}, {address.city}, {address.state} - {address.pincode}, {address.country}</div>
-                </div>
-                <div className="flex gap-2 flex-wrap">
-                  {!address.isActive && (
+            <ul className="space-y-5 mt-8">
+              {addresses.map(address => (
+                <li
+                  key={address.id}
+                  className={`flex flex-col sm:flex-row justify-between items-start sm:items-center p-6 rounded-2xl border text-base shadow-md text-black ${
+                    address.isActive ? 'bg-[#ffe6e6] border-[#e63946]' : 'bg-white border-[#f99]'
+                  }`}
+                >
+                  <div className="mb-2 sm:mb-0">
+                    <div className="font-bold text-xl text-[#d62828] animate-pulse">🏡 {address.address_name}</div>
+                    <div className="text-gray-700">{address.address_line}, {address.city}, {address.state} - {address.pincode}, {address.country}</div>
+                  </div>
+                  <div className="flex gap-3 flex-wrap">
+                    {!address.isActive && (
+                      <button
+                        onClick={() => handleSetActive(address.id)}
+                        className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition shadow-sm"
+                      >
+                        ✅ Set Active
+                      </button>
+                    )}
                     <button
-                      onClick={() => handleSetActive(address.id)}
-                      className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700 transition"
+                      onClick={() => handleDelete(address.id)}
+                      className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition shadow-sm"
                     >
-                      ✅ Set Active
+                      ❌ Delete
                     </button>
-                  )}
-                  <button
-                    onClick={() => handleDelete(address.id)}
-                    className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600 transition"
-                  >
-                    ❌ Delete
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </section>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </div>
       </main>
     </div>
   );
