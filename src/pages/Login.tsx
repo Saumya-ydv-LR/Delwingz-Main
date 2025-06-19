@@ -37,7 +37,6 @@ export default function Login() {
         payload
       );
 
-      // Handle login success
       alert('Login successful!');
       // Example: navigate('/dashboard');
     } catch (error) {
@@ -56,68 +55,115 @@ export default function Login() {
     navigate("/signup-admin");
   };
 
+  const handleForgotPassword = async () => {
+    if (!identifier) {
+      alert('Please enter your email or mobile number first.');
+      return;
+    }
+
+    const payload: { email?: string; mobile?: string } = {};
+
+    if (isEmail(identifier)) {
+      payload.email = identifier;
+    } else {
+      payload.mobile = identifier;
+    }
+
+    try {
+      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/users/forget-password`, payload);
+      alert("Password reset instructions have been sent!");
+    } catch (error) {
+      console.error(error);
+      alert("Failed to send reset instructions. Try again.");
+    }
+  };
+
   return (
-    <div className="flex h-screen">
-      {/* Left Section */}
-      <div className="w-1/2 flex flex-col justify-center items-center bg-delwingz-off-white px-8">
-        <h1 className="text-3xl font-bold mb-4 font-display delwingz-black">
-          Get Delicious Platter in Your Home
-        </h1>
-        <p className="text-sm text-muted-foreground mb-6 text-center">
-          Login to enjoy delicious meals delivered right into you
-        </p>
-
-        {/* Login Form */}
-        <form onSubmit={handleLogin} className="w-full max-w-sm space-y-4">
-          <input
-            type="text"
-            placeholder="Email or Mobile Number"
-            value={identifier}
-            onChange={(e) => setIdentifier(e.target.value)}
-            className="w-full p-3 rounded border border-input focus:outline-none focus:ring-2 focus:ring-primary"
-            required
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-3 rounded border border-input focus:outline-none focus:ring-2 focus:ring-primary"
-            required
-          />
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3 rounded text-white bg-delwingz-red hover:bg-primary/90 transition disabled:opacity-50"
-          >
-            {loading ? 'Logging in...' : 'Login'}
-          </button>
-        </form>
-
-        {/* Create Account Button */}
-        <button
-          onClick={handleCreateAccount}
-          className="mt-4 text-sm font-medium text-delwingz-red hover:underline"
-        >
-          Create Account
-        </button>
-
-        {/* Admin Signup Link */}
-        <p
-          onClick={handleAdminSignup}
-          className="mt-2 text-sm font-medium text-delwingz-red hover:underline cursor-pointer"
-        >
-          Admin Signup
-        </p>
+    <div className="relative flex h-screen w-screen bg-[#a6001a] overflow-hidden">
+      {/* Background Image or Branding on Left */}
+      <div className="absolute left-0 top-0 w-1/2 h-full flex items-center justify-center z-0">
+        <img src="/login-delwing.png" alt="Logo" className="w-60 h-60" />
       </div>
 
-      {/* Right Section with Image */}
-      <div className="w-1/2 flex items-center justify-center bg-white">
-        <img
-          src="/delwingz-login-banner.png"
-          alt="Delwingz Banner"
-          className="max-w-[100%] max-h-[100%] object-contain"
-        />
+      {/* Login Form aligned to right and centered vertically */}
+      <div className="flex items-center justify-end h-screen w-full pr-24">
+        <div className="bg-white p-10 rounded-xl shadow-2xl w-[400px]">
+          <h2 className="text-5xl font-extrabold text-center text-[#e63946] font-serif">
+            User Login
+          </h2>
+          <h3 className="text-xl text-center font-bold mt-2">Welcome Back</h3>
+          <p className="text-sm text-center text-gray-500 mb-6">
+            Login to access the user dashboard
+          </p>
+
+          <form onSubmit={handleLogin} className="space-y-5">
+            {/* Email Input */}
+            <div>
+              <label className="text-sm block mb-1">Email or Mobile</label>
+              <div className="flex items-center border rounded px-3 py-2">
+                <span className="mr-2">📧</span>
+                <input
+                  type="text"
+                  placeholder="admin@example.com"
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
+                  className="w-full outline-none"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Password Input */}
+            <div>
+              <label className="text-sm block mb-1">Password</label>
+              <div className="flex items-center border rounded px-3 py-2">
+                <span className="mr-2">🔒</span>
+                <input
+                  type="password"
+                  placeholder="********"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full outline-none"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Login Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-[#e63946] text-white py-3 rounded hover:bg-[#d62828] transition"
+            >
+              {loading ? 'Logging in...' : 'Login'}
+            </button>
+
+            {/* Footer Links */}
+            <div className="flex justify-center gap-4 text-sm text-[#a6001a]">
+              <button
+                type="button"
+                onClick={handleCreateAccount}
+                className="hover:underline"
+              >
+                Create Account
+              </button>
+              <button
+                type="button"
+                onClick={handleForgotPassword}
+                className="hover:underline"
+              >
+                Forgot Password?
+              </button>
+            </div>
+
+            <p
+              onClick={handleAdminSignup}
+              className="text-center text-sm mt-2 cursor-pointer text-[#a6001a] hover:underline"
+            >
+              Admin Signup
+            </p>
+          </form>
+        </div>
       </div>
     </div>
   );
